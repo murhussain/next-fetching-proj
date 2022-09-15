@@ -21,33 +21,28 @@ export async function getStaticProps(context) {
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
 
-  // if (!data) {
-  //   return {
-  //     redirect: {
-  //       destination: '/no-data',
-  //     },
-  //   };
-  // }
+  // if failed to find data file then redirect user to the other path
+  if (!data) {
+    return {
+      redirect: {
+        destination: '/no-data',
+      },
+    };
+  }
 
-  // if (data.products.length === 0) {
-  //   return { notFound: true };
-  // }
+  // if it finds empty content in the file the returns 404 page
+  if (data.products.length === 0) {
+    return { notFound: true };
+  }
 
+  //  return page with the content if file has data
   return {
     props: {
       products: data.products
-    }
+    },
+    // reload the page after every 10sec if data changes, then update the webpage
+    revalidate: 10, 
   };
 }
-
-// export async function getStaticProps() {
-//   return {
-//     props: {
-//       products: [
-//         { id: 'p1', title: 'Product 1' }
-//       ]
-//     }
-//   }
-// }
 
 export default HomePage;
