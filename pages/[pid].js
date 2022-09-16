@@ -40,6 +40,11 @@ export async function getStaticProps(context) {
   // this line is responsible for fetching individual object from dataFile
   const product = data.products.find((product) => product.id === productId);
 
+  // return not found if parameter passed in request is nof founf in dummyData
+  if(!product){
+    return { notFound: true };
+  }
+
   // this line is responsible for sending fetched object to the Component
   return {
     props: {
