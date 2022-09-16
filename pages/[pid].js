@@ -20,17 +20,27 @@ function ProductDetailPage(props) {
   );
 }
 
-export async function getStaticProps(context) {
-  const { params } = context;
-
-  const productId = params.pid;
-
+async function getData() {
   const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
 
+  return data;
+}
+
+export async function getStaticProps(context) {
+  const { params } = context;
+
+  // this line is responsible for storing id from user request
+  const productId = params.pid;
+
+  // the line is responsible to read dataFile 
+  const data = await getData();
+
+  // this line is responsible for fetching individual object from dataFile
   const product = data.products.find((product) => product.id === productId);
 
+  // this line is responsible for sending fetched object to the Component
   return {
     props: {
       loadedProduct: product,
@@ -39,10 +49,16 @@ export async function getStaticProps(context) {
 }
 
 export async function getStaticPaths() {
+  // the line is responsible to read dataFile 
+  const data = await getData();
+
+  // search all ids in dummyData file
+  const ids = data.products.map((product) => product.id);
+
+  // creating parameters of all id to be sent on a page based on selected one
+  const pathsWithParams = ids.map((id) => ({ params: { pid: id } }))
   return {
-    paths: [
-      { params: { pid: 'p1' } }
-    ],
+    paths: pathsWithParams,
     fallback: true
   };
 }
