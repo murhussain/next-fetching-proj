@@ -1,11 +1,12 @@
 function UserProfilePage(props) {
+  const user = props.username;
 
   return (
-    <h1>{ props.username}</h1>
+    <h1>{user}</h1>
   );
-}
+} export default UserProfilePage;
 
-export default UserProfilePage;
+
 
 export async function getServerSideProps(context) {
   return {
